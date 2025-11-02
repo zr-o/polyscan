@@ -17,6 +17,7 @@
   let constituents = [];
   let constituentsPromise = null;
   const quoteCache = new Map();
+  const tickerMap = new Map();
 
   const formatPrice = (value) => (typeof value === 'number' ? `$${value.toFixed(2)}` : 'N/A');
 
@@ -83,6 +84,8 @@
         });
     }
     constituents = await constituentsPromise;
+    tickerMap.clear();
+    constituents.forEach((item) => tickerMap.set(item.symbol.toUpperCase(), item.name));
     return constituents;
   };
 
@@ -219,10 +222,36 @@
     }
   };
 
+  const navigateToTicker = (symbol) => {
+    const upperSymbol = symbol.toUpperCase();
+
+    const proceed = () => {
+      if (!tickerMap.has(upperSymbol)) {
+        setStatus(`Le ticker "${upperSymbol}" n'est pas couvert par PolyScan.`);
+        return;
+      }
+      window.location.href = `/compagnies/${upperSymbol}`;
+    };
+
+    if (!tickerMap.size) {
+      loadConstituents()
+        .then(proceed)
+        .catch(() => {
+          setStatus("Impossible de charger la liste des tickers.");
+        });
+      return;
+    }
+
+    proceed();
+  };
+
   const applySelection = (element) => {
     if (!element) return;
-    input.value = `${element.dataset.ticker} - ${element.dataset.name}`;
+    const ticker = element.dataset.ticker;
+    const name = element.dataset.name;
+    input.value = `${ticker} - ${name}`;
     resultsList.hidden = true;
+    navigateToTicker(ticker);
   };
 
   input.addEventListener('input', (event) => {
@@ -246,23 +275,32 @@
       performSearch(event.target.value);
     }
 
-    if (!currentItems.length) return;
-
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
-        activeIndex = (activeIndex + 1) % currentItems.length;
-        highlightItem(activeIndex);
+        if (currentItems.length) {
+          activeIndex = (activeIndex + 1) % currentItems.length;
+          highlightItem(activeIndex);
+        }
         break;
       case 'ArrowUp':
         event.preventDefault();
-        activeIndex = (activeIndex - 1 + currentItems.length) % currentItems.length;
-        highlightItem(activeIndex);
+        if (currentItems.length) {
+          activeIndex = (activeIndex - 1 + currentItems.length) % currentItems.length;
+          highlightItem(activeIndex);
+        }
         break;
       case 'Enter':
+        event.preventDefault();
         if (activeIndex >= 0) {
-          event.preventDefault();
           applySelection(currentItems[activeIndex]);
+        } else {
+          const typed = input.value.trim().toUpperCase();
+          if (tickerMap.has(typed)) {
+            navigateToTicker(typed);
+          } else if (typed) {
+            setStatus(`Le ticker "${typed}" n'est pas couvert par PolyScan.`);
+          }
         }
         break;
       case 'Escape':
@@ -297,5 +335,7 @@
     }, 120);
   });
 
-  performSearch('');
+  loadConstituents().catch(() => {
+    /* ignore warmup errors */
+  });
 })();

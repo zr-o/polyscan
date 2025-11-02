@@ -4,45 +4,116 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="static-page">
-      <section className="static-hero">
-        <h1>Contactez PolyScan</h1>
-        <p>
-          Parlons de vos besoins en renseignement financier. Remplissez le formulaire ci-dessous ou
-          écrivez-nous directement pour planifier une démonstration.
+    <div className="contact-page">
+      <section className="contact-intro">
+        <p className="eyebrow">Parlons de vos projets</p>
+        <h1>Contactez notre équipe PolyScan</h1>
+        <p className="contact-lead">
+          Une question sur nos produits ou un besoin de déploiement sur-mesure&nbsp;? Notre équipe est
+          disponible 24/7 pour vous guider et vous mettre en route en quelques minutes.
         </p>
       </section>
 
-      <section className="static-section">
-        <div className="static-card">
-          <h2>Coordonnées</h2>
-          <ul>
-            <li>Email : <a href="mailto:hello@polyscan.ai">hello@polyscan.ai</a></li>
-            <li>Téléphone : <a href="tel:+15145551234">+1 514-555-1234</a></li>
-            <li>Adresse : 2900 Édouard-Montpetit, Montréal (QC)</li>
-          </ul>
-        </div>
-        <div className="static-card">
-          <h2>Vous préférez un message ?</h2>
-          <form className="static-form">
-            <label>
-              Nom complet
-              <input type="text" name="name" placeholder="Alex Tremblay" required />
+      <section className="contact-body">
+        <form className="contact-form" aria-label="Formulaire pour joindre PolyScan">
+          <div className="contact-field-row">
+            <label className="contact-field">
+              Prénom
+              <input type="text" name="firstName" placeholder="Alex" autoComplete="given-name" />
             </label>
-            <label>
-              Courriel professionnel
-              <input type="email" name="email" placeholder="alex@entreprise.com" required />
+            <label className="contact-field">
+              Nom
+              <input type="text" name="lastName" placeholder="Tremblay" autoComplete="family-name" />
             </label>
-            <label>
-              Message
-              <textarea name="message" rows={5} placeholder="Décrivez votre projet" required />
+          </div>
+
+          <label className="contact-field">
+            Courriel professionnel
+            <input type="email" name="email" placeholder="vous@entreprise.com" autoComplete="email" />
+          </label>
+
+          <div className="contact-field-row">
+            <label className="contact-field contact-field--select">
+              Pays
+              <select name="country" defaultValue="CA">
+                <option value="CA">Canada</option>
+                <option value="US">États-Unis</option>
+                <option value="FR">France</option>
+                <option value="GB">Royaume-Uni</option>
+              </select>
             </label>
-            <button type="submit" className="btn btn-primary" disabled>
-              Envoyer (démo)
-            </button>
-          </form>
-        </div>
+            <label className="contact-field">
+              Numéro de téléphone
+              <input
+                type="tel"
+                name="phone"
+                placeholder="+1 (514) 555-0000"
+                autoComplete="tel"
+              />
+            </label>
+          </div>
+
+          <label className="contact-field">
+            Message
+            <textarea
+              name="message"
+              placeholder="Dites-nous comment nous pouvons vous aider..."
+              rows={5}
+            />
+          </label>
+
+          <fieldset className="contact-field contact-services">
+            <legend>Services recherchés</legend>
+            <div className="contact-services__grid">
+              <label>
+                <input type="checkbox" name="services" value="deployment" />
+                Déploiement personnalisé
+              </label>
+              <label>
+                <input type="checkbox" name="services" value="integration" />
+                Intégration API
+              </label>
+              <label>
+                <input type="checkbox" name="services" value="training" />
+                Formation analystes
+              </label>
+              <label>
+                <input type="checkbox" name="services" value="compliance" />
+                Veille réglementaire
+              </label>
+              <label>
+                <input type="checkbox" name="services" value="support" />
+                Support 24/7
+              </label>
+              <label>
+                <input type="checkbox" name="services" value="other" />
+                Autre besoin
+              </label>
+            </div>
+          </fieldset>
+
+          <button type="submit" className="contact-submit" disabled>
+            Envoyer (démo)
+          </button>
+        </form>
+
+        <aside className="contact-sidebar" aria-label="Coordonnées PolyScan">
+          <div className="contact-sidebar__card">
+            <h2>Discuter avec nous</h2>
+            <p className="contact-placeholder">Plus tard...</p>
+          </div>
+
+          <div className="contact-sidebar__card">
+            <h2>Nous appeler</h2>
+            <p className="contact-placeholder">Plus tard...</p>
+          </div>
+
+          <div className="contact-sidebar__card">
+            <h2>Nous rendre visite</h2>
+            <p className="contact-placeholder">Plus tard...</p>
+          </div>
+        </aside>
       </section>
-    </main>
+    </div>
   );
 }

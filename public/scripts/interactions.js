@@ -1,25 +1,7 @@
 const initInteractions = () => {
-  const chatButton = document.querySelector('.chat-button');
-  const footer = document.querySelector('.site-footer');
   const serviceActions = document.querySelectorAll('.service-action');
   const tickerInput = document.querySelector('#ticker-input');
-
-  if (chatButton && footer) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            chatButton.classList.add('hidden');
-          } else {
-            chatButton.classList.remove('hidden');
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    observer.observe(footer);
-  }
+  const chatTriggers = document.querySelectorAll('[data-open-chat]');
 
   serviceActions.forEach((action) => {
     action.addEventListener('click', (event) => {
@@ -27,11 +9,7 @@ const initInteractions = () => {
 
       switch (type) {
         case 'chatbot': {
-          event.preventDefault();
-          const chatbotHint = document.createElement('div');
-          chatbotHint.className = 'chatbot-hint';
-          chatbotHint.textContent = 'Le chatbot arrive bientôt. Restez connectés !';
-          action.replaceWith(chatbotHint);
+          window.dispatchEvent(new CustomEvent('polyscan-open-chat'));
           break;
         }
         case 'search': {
@@ -70,6 +48,13 @@ const initInteractions = () => {
         default:
           break;
       }
+    });
+  });
+
+  chatTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.dispatchEvent(new CustomEvent('polyscan-open-chat'));
     });
   });
 };
